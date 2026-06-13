@@ -107,8 +107,8 @@ export default async function TestPage() {
   if (interview) {
     const wrongCats = seededShuffle(ALL_CATEGORIES.filter(c => c !== interview.category), seed + 9000).slice(0, 3)
     const { options, correct } = shuffleWithCorrect(
-      [interview.category, ...wrongCats].map(c => c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())),
-      interview.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      [interview.category, ...wrongCats].map(c => c.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())),
+      interview.category.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
       seed + 9001
     )
     candidates.push({
