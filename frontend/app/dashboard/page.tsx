@@ -1,6 +1,9 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import rodcodeImg from '@/app/assets/rodcode_ia.png'
+import bannerImg from '@/app/assets/banner_english_app.png'
 
 async function logout() {
   'use server'
@@ -158,23 +161,24 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-slate-50">
 
       {/* Header */}
-      <header className="border-b border-slate-200 bg-white px-6 py-4">
-        <div className="mx-auto flex max-w-2xl items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🇬🇧</span>
-            <span className="font-semibold text-slate-800">English Journey</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard/profile"
-              className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
-            >
-              {profile?.full_name ?? profile?.email}
-            </Link>
+      <header className="relative border-b border-violet-200 bg-white h-20 md:h-36">
+        <Image
+          src={bannerImg}
+          alt="English Journey"
+          fill
+          className="object-contain object-center"
+          priority
+        />
+        {/* Overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+        {/* Nav content */}
+        <div className="absolute inset-0 z-10 flex items-center px-6">
+          <div className="mx-auto w-full max-w-2xl flex items-center justify-between">
+            <span className="font-semibold text-white drop-shadow">English Journey</span>
             <form action={logout}>
               <button
                 type="submit"
-                className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+                className="text-xs font-semibold text-white bg-black/30 hover:bg-black/50 transition-colors px-3 py-1 rounded-full"
               >
                 Sign out
               </button>
@@ -291,8 +295,23 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {/* RodCode AI */}
+        <Link href="/dashboard/rodcode">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 px-5 py-4 flex items-center gap-4 hover:from-violet-700 hover:to-indigo-700 transition-all shadow-sm cursor-pointer">
+            <div className="w-14 h-14 rounded-full overflow-hidden shrink-0 ring-2 ring-white/30 bg-white/10">
+              <Image src={rodcodeImg} alt="RodCode" width={56} height={56} className="w-full h-full object-cover" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-violet-200 text-xs font-medium">AI English Teacher</p>
+              <p className="text-white font-bold text-base">RodCode</p>
+              <p className="text-violet-200 text-xs mt-0.5">Ask me anything about English →</p>
+            </div>
+            <span className="shrink-0 text-2xl">🎓</span>
+          </div>
+        </Link>
+
         {/* Quick stats */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-3 mt-4">
           <div className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-center">
             <p className="text-2xl font-bold text-slate-800">{currentDay - 1}</p>
             <p className="text-xs text-slate-400 mt-0.5">Days done</p>
