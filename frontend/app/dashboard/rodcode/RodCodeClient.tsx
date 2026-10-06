@@ -3,9 +3,37 @@
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import ReactMarkdown, { type Components } from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import rodcodeImg from '@/app/assets/rodcode_ia.png'
 
 type Message = { role: 'user' | 'assistant'; content: string }
+
+const MD_COMPONENTS: Components = {
+  h1: ({ children }) => <h3 className="mt-3 mb-1 text-base font-bold text-slate-900 first:mt-0">{children}</h3>,
+  h2: ({ children }) => <h3 className="mt-3 mb-1 text-[15px] font-bold text-slate-900 first:mt-0">{children}</h3>,
+  h3: ({ children }) => <h4 className="mt-3 mb-1 font-semibold text-slate-900 first:mt-0">{children}</h4>,
+  p: ({ children }) => <p className="my-1.5 first:mt-0 last:mb-0">{children}</p>,
+  strong: ({ children }) => <strong className="font-semibold text-slate-900">{children}</strong>,
+  ul: ({ children }) => <ul className="my-1.5 list-disc pl-5 space-y-0.5">{children}</ul>,
+  ol: ({ children }) => <ol className="my-1.5 list-decimal pl-5 space-y-0.5">{children}</ol>,
+  blockquote: ({ children }) => (
+    <blockquote className="my-2 border-l-4 border-violet-300 bg-violet-50/60 py-1 pl-3 pr-2 text-slate-700 rounded-r-lg [&>p]:my-0.5">
+      {children}
+    </blockquote>
+  ),
+  hr: () => <hr className="my-3 border-slate-200" />,
+  code: ({ children }) => <code className="rounded bg-slate-100 px-1 py-0.5 font-mono text-[13px] text-violet-700">{children}</code>,
+  pre: ({ children }) => <pre className="my-2 overflow-x-auto rounded-lg bg-slate-900 p-3 text-[13px] text-slate-100 [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-slate-100">{children}</pre>,
+  a: ({ children, href }) => <a href={href} target="_blank" rel="noopener noreferrer" className="text-violet-600 underline">{children}</a>,
+  table: ({ children }) => (
+    <div className="my-2 overflow-x-auto">
+      <table className="w-full border-collapse text-[13px]">{children}</table>
+    </div>
+  ),
+  th: ({ children }) => <th className="border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-left font-semibold">{children}</th>,
+  td: ({ children }) => <td className="border border-slate-200 px-2.5 py-1.5">{children}</td>,
+}
 
 const WELCOME: Message = {
   role: 'assistant',
@@ -121,7 +149,7 @@ export default function RodCodeClient() {
               </div>
             )}
             <div
-              className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+              className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === 'user' ? 'whitespace-pre-wrap' : 'break-words'} ${
                 msg.role === 'user'
                   ? 'bg-violet-600 text-white rounded-tr-sm'
                   : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'
@@ -133,6 +161,10 @@ export default function RodCodeClient() {
                   <span className="w-2 h-2 bg-slate-300 rounded-full animate-bounce [animation-delay:150ms]" />
                   <span className="w-2 h-2 bg-slate-300 rounded-full animate-bounce [animation-delay:300ms]" />
                 </span>
+              ) : msg.role === 'assistant' ? (
+                <ReactMarkdown remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
+                  {msg.content}
+                </ReactMarkdown>
               ) : msg.content}
             </div>
           </div>
